@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Trophy, Users, Dumbbell, Settings, BookOpen } from 'lucide-react';
 
 interface MainMenuProps {
-  onNavigate: (screen: 'character-select' | 'training' | 'settings' | 'dei-hub') => void;
+  onNavigate: (screen: 'career' | 'exhibition' | 'training' | 'settings' | 'dei-hub') => void;
 }
 
 const MainMenu = ({ onNavigate }: MainMenuProps) => {
@@ -21,7 +21,7 @@ const MainMenu = ({ onNavigate }: MainMenuProps) => {
           <Button 
             className="w-full h-14 text-lg font-bold retro-shadow hover:translate-x-1 hover:translate-y-1 transition-transform"
             variant="default"
-            onClick={() => onNavigate('character-select')}
+            onClick={() => onNavigate('career')}
           >
             <Trophy className="mr-2 h-5 w-5" />
             Career Mode
@@ -30,7 +30,7 @@ const MainMenu = ({ onNavigate }: MainMenuProps) => {
           <Button 
             className="w-full h-14 text-lg font-bold retro-shadow hover:translate-x-1 hover:translate-y-1 transition-transform"
             variant="secondary"
-            onClick={() => onNavigate('character-select')}
+            onClick={() => onNavigate('exhibition')}
           >
             <Users className="mr-2 h-5 w-5" />
             Exhibition Match

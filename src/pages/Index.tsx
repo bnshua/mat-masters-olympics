@@ -2,6 +2,7 @@ import { useState } from 'react';
 import MainMenu from '@/components/MainMenu';
 import CharacterSelect from '@/components/CharacterSelect';
 import CharacterCreation from '@/components/CharacterCreation';
+import CareerMode from '@/components/CareerMode';
 import MatchScreen from '@/components/MatchScreen';
 import TrainingCenter from '@/components/TrainingCenter';
 import DEIHub from '@/components/DEIHub';
@@ -9,7 +10,7 @@ import Settings from '@/components/Settings';
 import { Wrestler } from '@/types/game';
 import { wrestlers } from '@/data/wrestlers';
 
-type Screen = 'character-creation' | 'menu' | 'character-select' | 'match' | 'training' | 'settings' | 'dei-hub';
+type Screen = 'character-creation' | 'menu' | 'career' | 'exhibition' | 'match' | 'training' | 'settings' | 'dei-hub';
 
 const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('character-creation');
@@ -57,8 +58,12 @@ const Index = () => {
       {currentScreen === 'menu' && (
         <MainMenu onNavigate={(screen) => setCurrentScreen(screen)} />
       )}
+
+      {currentScreen === 'career' && (
+        <CareerMode onBack={handleBackToMenu} customCharacter={customCharacter} />
+      )}
       
-      {currentScreen === 'character-select' && (
+      {currentScreen === 'exhibition' && (
         <CharacterSelect 
           onBack={handleBackToMenu}
           onSelect={handleCharacterSelect}

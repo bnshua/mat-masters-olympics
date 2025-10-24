@@ -11,10 +11,11 @@ import wrestlersImage from '@/assets/wrestlers.png';
 interface MatchScreenProps {
   player: Wrestler;
   opponent: Wrestler;
-  onBack: () => void;
+  onBack: (won?: boolean) => void;
+  isCareerMode?: boolean;
 }
 
-const MatchScreen = ({ player, opponent, onBack }: MatchScreenProps) => {
+const MatchScreen = ({ player, opponent, onBack, isCareerMode = false }: MatchScreenProps) => {
   const [matchState, setMatchState] = useState<MatchState>({
     round: 1,
     time: 180,
@@ -156,7 +157,7 @@ const MatchScreen = ({ player, opponent, onBack }: MatchScreenProps) => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <Button variant="outline" onClick={onBack} className="retro-shadow">
+          <Button variant="outline" onClick={() => onBack()} className="retro-shadow">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Exit Match
           </Button>
@@ -260,8 +261,12 @@ const MatchScreen = ({ player, opponent, onBack }: MatchScreenProps) => {
                     <div className="text-5xl font-bold text-primary mb-4">
                       {matchState.winner === 'player' ? 'VICTORY!' : 'DEFEAT'}
                     </div>
-                    <Button size="lg" onClick={onBack} className="retro-shadow">
-                      Return to Menu
+                    <Button 
+                      size="lg" 
+                      onClick={() => isCareerMode ? onBack(matchState.winner === 'player') : onBack()} 
+                      className="retro-shadow"
+                    >
+                      {isCareerMode ? 'Continue' : 'Return to Menu'}
                     </Button>
                   </div>
                 </div>
@@ -314,18 +319,18 @@ const MatchScreen = ({ player, opponent, onBack }: MatchScreenProps) => {
                     matchState.currentTurn !== 'player' || 
                     matchState.playerStamina < move.staminaCost
                   }
-                  className="h-auto py-3 flex flex-col items-start retro-shadow"
+                  className="h-auto py-4 flex flex-col items-start retro-shadow bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground border-2 border-primary-foreground/20"
                   variant={matchState.playerStamina < move.staminaCost ? 'outline' : 'default'}
                 >
-                  <div className="font-bold text-sm mb-1">{move.name}</div>
-                  <div className="text-xs space-y-1 text-left w-full">
-                    <div className="flex justify-between">
+                  <div className="font-bold text-base mb-2">{move.name}</div>
+                  <div className="text-xs space-y-1 text-left w-full opacity-90">
+                    <div className="flex justify-between items-center">
                       <span>Power:</span>
-                      <Badge variant="secondary" className="text-xs">{move.power}</Badge>
+                      <Badge variant="secondary" className="text-xs ml-2 bg-primary-foreground/20 text-primary-foreground border-0">{move.power}</Badge>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
                       <span>Cost:</span>
-                      <Badge variant="outline" className="text-xs">{move.staminaCost}</Badge>
+                      <Badge variant="outline" className="text-xs ml-2 bg-primary-foreground/10 text-primary-foreground border-primary-foreground/30">{move.staminaCost}</Badge>
                     </div>
                   </div>
                 </Button>
