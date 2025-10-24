@@ -1,19 +1,38 @@
 import { useState } from 'react';
 import MainMenu from '@/components/MainMenu';
 import CharacterSelect from '@/components/CharacterSelect';
+import CharacterCreation from '@/components/CharacterCreation';
 import MatchScreen from '@/components/MatchScreen';
+import TrainingCenter from '@/components/TrainingCenter';
+import DEIHub from '@/components/DEIHub';
+import Settings from '@/components/Settings';
 import { Wrestler } from '@/types/game';
 import { wrestlers } from '@/data/wrestlers';
 
-type Screen = 'menu' | 'character-select' | 'match' | 'training' | 'settings' | 'dei-hub';
+type Screen = 'character-creation' | 'menu' | 'character-select' | 'match' | 'training' | 'settings' | 'dei-hub';
 
 const Index = () => {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('menu');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('character-creation');
   const [selectedPlayer, setSelectedPlayer] = useState<Wrestler | null>(null);
   const [selectedOpponent, setSelectedOpponent] = useState<Wrestler | null>(null);
+  const [customCharacter, setCustomCharacter] = useState<{
+    name: string;
+    pronouns: string;
+    spriteIndex: number;
+  } | null>(null);
+
+  const handleCharacterCreation = (character: { name: string; pronouns: string; spriteIndex: number }) => {
+    setCustomCharacter(character);
+    setCurrentScreen('menu');
+  };
 
   const handleCharacterSelect = (wrestler: Wrestler) => {
-    setSelectedPlayer(wrestler);
+    // Use custom character data if available
+    const playerWrestler = customCharacter 
+      ? { ...wrestler, name: customCharacter.name, pronouns: customCharacter.pronouns, spriteIndex: customCharacter.spriteIndex }
+      : wrestler;
+    
+    setSelectedPlayer(playerWrestler);
     
     // Select random opponent (different from player)
     const opponents = wrestlers.filter(w => w.id !== wrestler.id);
@@ -31,6 +50,10 @@ const Index = () => {
 
   return (
     <>
+      {currentScreen === 'character-creation' && (
+        <CharacterCreation onComplete={handleCharacterCreation} />
+      )}
+
       {currentScreen === 'menu' && (
         <MainMenu onNavigate={(screen) => setCurrentScreen(screen)} />
       )}
@@ -51,52 +74,15 @@ const Index = () => {
       )}
 
       {currentScreen === 'training' && (
-        <div className="min-h-screen flex items-center justify-center bg-gym-floor">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Training Center</h1>
-            <p className="text-xl mb-8">Coming Soon!</p>
-            <button 
-              onClick={handleBackToMenu}
-              className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded retro-shadow"
-            >
-              Back to Menu
-            </button>
-          </div>
-        </div>
+        <TrainingCenter onBack={handleBackToMenu} />
       )}
 
       {currentScreen === 'dei-hub' && (
-        <div className="min-h-screen flex items-center justify-center bg-gym-floor">
-          <div className="text-center max-w-2xl p-8">
-            <h1 className="text-4xl font-bold mb-4">DEI Hub</h1>
-            <p className="text-lg mb-8">
-              Learn about diversity, equity, and inclusion in wrestling. 
-              Discover inspiring athletes from around the world who have broken barriers 
-              and promoted respect and fairness in sports.
-            </p>
-            <button 
-              onClick={handleBackToMenu}
-              className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded retro-shadow"
-            >
-              Back to Menu
-            </button>
-          </div>
-        </div>
+        <DEIHub onBack={handleBackToMenu} />
       )}
 
       {currentScreen === 'settings' && (
-        <div className="min-h-screen flex items-center justify-center bg-gym-floor">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-4">Settings</h1>
-            <p className="text-xl mb-8">Accessibility & Controls Coming Soon!</p>
-            <button 
-              onClick={handleBackToMenu}
-              className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded retro-shadow"
-            >
-              Back to Menu
-            </button>
-          </div>
-        </div>
+        <Settings onBack={handleBackToMenu} />
       )}
     </>
   );
