@@ -66,6 +66,20 @@ const MatchScreen = ({ player, opponent, onBack, isCareerMode = false }: MatchSc
               commentary: ['Time expired!', `Winner: ${prev.playerScore > prev.opponentScore ? player.name : opponent.name}!`]
             };
           }
+          
+          // Check if either player has less than 12 stamina (minimum move cost)
+          if (prev.playerStamina < 12 || prev.opponentStamina < 12) {
+            const winner = prev.playerScore > prev.opponentScore ? 'player' : 
+                          prev.opponentScore > prev.playerScore ? 'opponent' : 
+                          prev.playerStamina > prev.opponentStamina ? 'player' : 'opponent';
+            return {
+              ...prev,
+              phase: 'finished',
+              winner,
+              commentary: ['Match ended - insufficient stamina!', `Winner: ${winner === 'player' ? player.name : opponent.name}!`]
+            };
+          }
+          
           return { ...prev, time: prev.time - 1 };
         });
       }, 1000);
@@ -256,15 +270,15 @@ const MatchScreen = ({ player, opponent, onBack, isCareerMode = false }: MatchSc
               )}
 
               {matchState.phase === 'finished' && (
-                <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                  <div className="text-center">
+                <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-50">
+                  <div className="text-center z-50">
                     <div className="text-5xl font-bold text-primary mb-4">
                       {matchState.winner === 'player' ? 'VICTORY!' : 'DEFEAT'}
                     </div>
                     <Button 
                       size="lg" 
                       onClick={() => isCareerMode ? onBack(matchState.winner === 'player') : onBack()} 
-                      className="retro-shadow"
+                      className="retro-shadow relative z-50"
                     >
                       {isCareerMode ? 'Continue' : 'Return to Menu'}
                     </Button>
