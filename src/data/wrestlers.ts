@@ -36,7 +36,7 @@ export const wrestlers: Wrestler[] = [
   {
     id: 'wrestler-3',
     name: 'Marcus Thompson',
-    pronouns: 'He/Him',
+    pronouns: 'Xe/Xir',
     school: 'Jefferson Prep',
     singletColor: 'green',
     spriteIndex: 2,
@@ -52,7 +52,7 @@ export const wrestlers: Wrestler[] = [
   {
     id: 'wrestler-4',
     name: 'Priya Patel',
-    pronouns: 'She/Her',
+    pronouns: 'Tyleruses/ChatGPT',
     school: 'Washington State',
     singletColor: 'yellow',
     spriteIndex: 3,
