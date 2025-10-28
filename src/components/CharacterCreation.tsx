@@ -19,7 +19,7 @@ const CharacterCreation = ({ onComplete }: CharacterCreationProps) => {
   const [pronouns, setPronouns] = useState('They/Them');
   const [selectedSprite, setSelectedSprite] = useState(0);
 
-  const pronounOptions = ['He/Him', 'She/Her', 'They/Them'];
+  const pronounOptions = ['He/Him', 'She/Her', 'They/Them', 'Xe/Xir', 'Furry/Furryself', 'James/Jameself'];
   
   const spriteOptions = [
     { index: 0, label: 'Athlete 1' },
