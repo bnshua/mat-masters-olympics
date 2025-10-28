@@ -9,11 +9,13 @@ import DEIHub from '@/components/DEIHub';
 import Settings from '@/components/Settings';
 import { Overworld } from '@/components/Overworld';
 import { SchoolInterior } from '@/components/SchoolInterior';
+import { WeightRoomInterior } from '@/components/WeightRoomInterior';
+import { WrestlingRoomInterior } from '@/components/WrestlingRoomInterior';
 import { Wrestler } from '@/types/game';
 import { GameState } from '@/types/overworld';
 import { wrestlers } from '@/data/wrestlers';
 
-type Screen = 'character-creation' | 'overworld' | 'school' | 'menu' | 'career' | 'exhibition' | 'match' | 'training' | 'settings' | 'dei-hub';
+type Screen = 'character-creation' | 'overworld' | 'school' | 'wrestling-room-interior' | 'weight-room' | 'menu' | 'career' | 'exhibition' | 'match' | 'training' | 'settings' | 'dei-hub';
 
 const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('character-creation');
@@ -59,11 +61,11 @@ const Index = () => {
         break;
       case 'wrestling-room':
         setGameState(prev => ({ ...prev, currentLocation: 'wrestling-room' }));
-        setCurrentScreen('career');
+        setCurrentScreen('wrestling-room-interior');
         break;
       case 'weight-room':
         setGameState(prev => ({ ...prev, currentLocation: 'weight-room' }));
-        setCurrentScreen('training');
+        setCurrentScreen('weight-room');
         break;
       case 'dei-center':
         setGameState(prev => ({ ...prev, currentLocation: 'dei-center' }));
@@ -83,6 +85,24 @@ const Index = () => {
       gpa: Math.min(4.0, prev.gpa + 0.1),
       lastSchoolTime: prev.currentTime,
     }));
+  };
+
+  const handleStatBoost = (stat: keyof GameState['stats'], amount: number) => {
+    setGameState(prev => ({
+      ...prev,
+      stats: {
+        ...prev.stats,
+        [stat]: Math.min(100, prev.stats[stat] + amount),
+      }
+    }));
+  };
+
+  const handleWrestlingModeSelect = (mode: 'career' | 'exhibition') => {
+    if (mode === 'career') {
+      setCurrentScreen('career');
+    } else {
+      setCurrentScreen('exhibition');
+    }
   };
 
   const handleCharacterSelect = (wrestler: Wrestler) => {
@@ -129,6 +149,21 @@ const Index = () => {
         />
       )}
 
+      {currentScreen === 'wrestling-room-interior' && (
+        <WrestlingRoomInterior
+          onExit={handleExitToOverworld}
+          onSelectMode={handleWrestlingModeSelect}
+        />
+      )}
+
+      {currentScreen === 'weight-room' && (
+        <WeightRoomInterior
+          onExit={handleExitToOverworld}
+          currentStats={gameState.stats}
+          onStatBoost={handleStatBoost}
+        />
+      )}
+
       {currentScreen === 'menu' && (
         <MainMenu onNavigate={(screen) => setCurrentScreen(screen)} />
       )}
@@ -152,9 +187,6 @@ const Index = () => {
         />
       )}
 
-      {currentScreen === 'training' && (
-        <TrainingCenter onBack={handleExitToOverworld} />
-      )}
 
       {currentScreen === 'dei-hub' && (
         <DEIHub onBack={handleExitToOverworld} />

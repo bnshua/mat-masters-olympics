@@ -4,37 +4,37 @@ export const BUILDINGS: Building[] = [
   {
     id: 'school',
     name: 'School',
-    position: { x: 200, y: 150 },
-    width: 120,
-    height: 100,
-    interactionDistance: 40,
-    color: '#e74c3c' // red
+    position: { x: 200, y: 120 },
+    width: 140,
+    height: 120,
+    interactionDistance: 50,
+    color: '#dc2626' // red-600
   },
   {
     id: 'wrestling-room',
     name: 'Wrestling Room',
-    position: { x: 450, y: 150 },
-    width: 100,
-    height: 90,
-    interactionDistance: 40,
-    color: '#3498db' // blue
+    position: { x: 460, y: 120 },
+    width: 120,
+    height: 100,
+    interactionDistance: 50,
+    color: '#2563eb' // blue-600
   },
   {
     id: 'weight-room',
     name: 'Weight Room',
-    position: { x: 200, y: 350 },
-    width: 100,
-    height: 90,
-    interactionDistance: 40,
-    color: '#2ecc71' // green
+    position: { x: 200, y: 340 },
+    width: 120,
+    height: 100,
+    interactionDistance: 50,
+    color: '#16a34a' // green-600
   },
   {
     id: 'dei-center',
     name: 'DEI Research Center',
-    position: { x: 450, y: 350 },
-    width: 110,
-    height: 95,
-    interactionDistance: 40,
-    color: '#9b59b6' // purple
+    position: { x: 460, y: 340 },
+    width: 120,
+    height: 100,
+    interactionDistance: 50,
+    color: '#9333ea' // purple-600
   }
 ];
