@@ -7,10 +7,13 @@ import MatchScreen from '@/components/MatchScreen';
 import TrainingCenter from '@/components/TrainingCenter';
 import DEIHub from '@/components/DEIHub';
 import Settings from '@/components/Settings';
+import { Overworld } from '@/components/Overworld';
+import { SchoolInterior } from '@/components/SchoolInterior';
 import { Wrestler } from '@/types/game';
+import { GameState } from '@/types/overworld';
 import { wrestlers } from '@/data/wrestlers';
 
-type Screen = 'character-creation' | 'menu' | 'career' | 'exhibition' | 'match' | 'training' | 'settings' | 'dei-hub';
+type Screen = 'character-creation' | 'overworld' | 'school' | 'menu' | 'career' | 'exhibition' | 'match' | 'training' | 'settings' | 'dei-hub';
 
 const Index = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('character-creation');
@@ -21,10 +24,65 @@ const Index = () => {
     pronouns: string;
     spriteIndex: number;
   } | null>(null);
+  
+  const [gameState, setGameState] = useState<GameState>({
+    playerPosition: { x: 50, y: 50 },
+    currentTime: 480, // 8:00 AM
+    gpa: 3.0,
+    lastSchoolTime: 480,
+    stats: {
+      technique: 50,
+      strength: 50,
+      speed: 50,
+      defense: 50,
+      stamina: 100,
+    },
+    currentLocation: 'overworld',
+    playerSprite: 0,
+  });
 
   const handleCharacterCreation = (character: { name: string; pronouns: string; spriteIndex: number }) => {
     setCustomCharacter(character);
-    setCurrentScreen('menu');
+    setGameState(prev => ({ ...prev, playerSprite: character.spriteIndex }));
+    setCurrentScreen('overworld');
+  };
+
+  const handleGameStateChange = (updates: Partial<GameState>) => {
+    setGameState(prev => ({ ...prev, ...updates }));
+  };
+
+  const handleEnterBuilding = (buildingId: string) => {
+    switch (buildingId) {
+      case 'school':
+        setGameState(prev => ({ ...prev, currentLocation: 'school' }));
+        setCurrentScreen('school');
+        break;
+      case 'wrestling-room':
+        setGameState(prev => ({ ...prev, currentLocation: 'wrestling-room' }));
+        setCurrentScreen('career');
+        break;
+      case 'weight-room':
+        setGameState(prev => ({ ...prev, currentLocation: 'weight-room' }));
+        setCurrentScreen('training');
+        break;
+      case 'dei-center':
+        setGameState(prev => ({ ...prev, currentLocation: 'dei-center' }));
+        setCurrentScreen('dei-hub');
+        break;
+    }
+  };
+
+  const handleExitToOverworld = () => {
+    setGameState(prev => ({ ...prev, currentLocation: 'overworld' }));
+    setCurrentScreen('overworld');
+  };
+
+  const handleSchoolTaskComplete = () => {
+    setGameState(prev => ({
+      ...prev,
+      gpa: Math.min(4.0, prev.gpa + 0.1),
+      lastSchoolTime: prev.currentTime,
+    }));
   };
 
   const handleCharacterSelect = (wrestler: Wrestler) => {
@@ -44,7 +102,7 @@ const Index = () => {
   };
 
   const handleBackToMenu = () => {
-    setCurrentScreen('menu');
+    setCurrentScreen('overworld');
     setSelectedPlayer(null);
     setSelectedOpponent(null);
   };
@@ -55,17 +113,33 @@ const Index = () => {
         <CharacterCreation onComplete={handleCharacterCreation} />
       )}
 
+      {currentScreen === 'overworld' && (
+        <Overworld
+          gameState={gameState}
+          onGameStateChange={handleGameStateChange}
+          onEnterBuilding={handleEnterBuilding}
+          onSettingsClick={() => setCurrentScreen('settings')}
+        />
+      )}
+
+      {currentScreen === 'school' && (
+        <SchoolInterior
+          onExit={handleExitToOverworld}
+          onTaskComplete={handleSchoolTaskComplete}
+        />
+      )}
+
       {currentScreen === 'menu' && (
         <MainMenu onNavigate={(screen) => setCurrentScreen(screen)} />
       )}
 
       {currentScreen === 'career' && (
-        <CareerMode onBack={handleBackToMenu} customCharacter={customCharacter} />
+        <CareerMode onBack={handleExitToOverworld} customCharacter={customCharacter} />
       )}
       
       {currentScreen === 'exhibition' && (
         <CharacterSelect 
-          onBack={handleBackToMenu}
+          onBack={handleExitToOverworld}
           onSelect={handleCharacterSelect}
         />
       )}
@@ -79,15 +153,15 @@ const Index = () => {
       )}
 
       {currentScreen === 'training' && (
-        <TrainingCenter onBack={handleBackToMenu} />
+        <TrainingCenter onBack={handleExitToOverworld} />
       )}
 
       {currentScreen === 'dei-hub' && (
-        <DEIHub onBack={handleBackToMenu} />
+        <DEIHub onBack={handleExitToOverworld} />
       )}
 
       {currentScreen === 'settings' && (
-        <Settings onBack={handleBackToMenu} />
+        <Settings onBack={() => setCurrentScreen('overworld')} />
       )}
     </>
   );

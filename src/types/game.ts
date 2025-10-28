@@ -1,3 +1,11 @@
+export interface WrestlerStats {
+  technique: number;
+  strength: number;
+  speed: number;
+  defense: number;
+  stamina: number;
+}
+
 export interface Wrestler {
   id: string;
   name: string;
@@ -5,13 +13,7 @@ export interface Wrestler {
   school: string;
   singletColor: string;
   spriteIndex: number;
-  stats: {
-    technique: number;
-    strength: number;
-    speed: number;
-    defense: number;
-    stamina: number;
-  };
+  stats: WrestlerStats;
   personality: 'aggressive' | 'defensive' | 'technical' | 'balanced';
 }
 
